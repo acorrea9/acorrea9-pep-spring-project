@@ -34,8 +34,7 @@ public class MessageService {
      * @return all messages
      */
     public List<Message> getAllMessages() {
-        // return messageRepository.getAllMessages();
-        return null;
+        return messageRepository.findAll();
     }
 
     /**
@@ -44,8 +43,7 @@ public class MessageService {
      * @return a message with the specific message_id if successful, null if not successfully found
      */
     public Message getMessageById(int id) {
-        // return messageRepository.getMessageById(id);
-        return null;
+        return messageRepository.findById(id).orElse(null);
     }
 
     /**
@@ -53,14 +51,13 @@ public class MessageService {
      * @param id the message_id.
      * @return the deleted message if successful, null if not successfully deleted
      */
-    public Message deleteMessage(int id) {
-        // Message message = getMessageById(id);
-        // if(message != null) {
-        //     if(messageRepository.deleteMessage(id)) {
-        //         return message;
-        //     }
-        // }
-        return null;
+    public long deleteMessage(int id) {
+        long prevCount = messageRepository.count();
+        if(messageRepository.existsById(id)) {
+            messageRepository.deleteById(id);
+            return prevCount - messageRepository.count();
+        }
+        return 0;
     }
 
     /**
@@ -68,13 +65,14 @@ public class MessageService {
      * @param id the message_id.
      * @return the new updated message if successful, null if not successfully updated
      */
-    public Message updateMessage(int id, Message message) {
-        // if((getMessageById(id) != null) && (message.getMessageText().length() > 0) && (message.getMessageText().length() <= 255)) {
-        //     if(messageRepository.updateMessage(id, message)) {
-        //         return getMessageById(id);
-        //     }
-        // }
-        return null;
+    public int updateMessage(int id, Message message) {
+        if(messageRepository.existsById(id) && (message.getMessageText().length() > 0) && (message.getMessageText().length() <= 255)) {
+            Message temp = messageRepository.findById(id).get();
+            temp.setMessageText(message.getMessageText());
+            messageRepository.save(temp);
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -83,7 +81,6 @@ public class MessageService {
      * @return all messages of a particular user
      */
     public List<Message> getAllMessagesByAccountId(int id) {
-        // return messageRepository.getAllMessagesByAccountId(id);
-        return null;
+        return messageRepository.findAllByPostedBy(id);
     }
 }

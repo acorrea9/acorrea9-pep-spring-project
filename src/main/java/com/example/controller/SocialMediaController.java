@@ -70,8 +70,8 @@ public class SocialMediaController {
     }
 
     @GetMapping("/messages/{messageId}")
-    public ResponseEntity<Message> getMessage(@PathVariable int message_id) {
-        Message messageById = messageService.getMessageById(message_id);
+    public ResponseEntity<Message> getMessage(@PathVariable int messageId) {
+        Message messageById = messageService.getMessageById(messageId);
         if(messageById != null) {
             return ResponseEntity.status(200).body(messageById);
         }
@@ -81,10 +81,10 @@ public class SocialMediaController {
     }
 
     @DeleteMapping("/messages/{messageId}")
-    public ResponseEntity<Message> deleteMessage(@PathVariable int message_id) {
-        Message deletedMessage = messageService.deleteMessage(message_id);
-        if(deletedMessage != null) {
-            return ResponseEntity.status(200).body(deletedMessage);
+    public ResponseEntity<Integer> deleteMessage(@PathVariable int messageId) {
+        long deletedMessageCount = messageService.deleteMessage(messageId);
+        if(deletedMessageCount == 1) {
+            return ResponseEntity.status(200).body(1);
         }
         else {
             return ResponseEntity.status(200).build();
@@ -92,10 +92,10 @@ public class SocialMediaController {
     }
 
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity<Message> deleteMessage(@PathVariable int message_id, @RequestBody Message message) {
-        Message updatedMessage = messageService.updateMessage(message_id, message);
-        if(updatedMessage != null) {
-            return ResponseEntity.status(200).body(updatedMessage);
+    public ResponseEntity<Integer> deleteMessage(@PathVariable int messageId, @RequestBody Message message) {
+        int updatedMessageCount = messageService.updateMessage(messageId, message);
+        if(updatedMessageCount == 1) {
+            return ResponseEntity.status(200).body(1);
         }
         else {
             return ResponseEntity.status(400).build();
@@ -103,7 +103,7 @@ public class SocialMediaController {
     }
 
     @GetMapping("/accounts/{accountId}/messages")
-    public ResponseEntity<List<Message>> getAllMessages(@PathVariable int account_id) {
-        return ResponseEntity.status(200).body(messageService.getAllMessagesByAccountId(account_id));
+    public ResponseEntity<List<Message>> getAllMessages(@PathVariable int accountId) {
+        return ResponseEntity.status(200).body(messageService.getAllMessagesByAccountId(accountId));
     }
 }

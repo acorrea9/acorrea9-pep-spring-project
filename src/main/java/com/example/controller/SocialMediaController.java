@@ -22,6 +22,10 @@ public class SocialMediaController {
     private AccountService accountService;
     private MessageService messageService;
 
+    /**
+     * Uses constructor injection to inject the AccountService and MessageService 
+     * dependency beans into the SocialMediaController controller/bean
+     */
     @Autowired
     public SocialMediaController(AccountService accountService, MessageService messageService) {
         this.accountService = accountService;

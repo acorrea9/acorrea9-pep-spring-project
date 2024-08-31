@@ -12,6 +12,10 @@ import com.example.repository.MessageRepository;
 public class MessageService {
     private MessageRepository messageRepository;
 
+    /**
+     * Uses constructor injection to inject the MessageRepository dependency bean 
+     * into the MessageService bean
+     */
     @Autowired
     public MessageService(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
@@ -49,7 +53,7 @@ public class MessageService {
     /**
      * Uses the MessageRepository to delete a message by its ID from the database.
      * @param id the message_id.
-     * @return the deleted message if successful, null if not successfully deleted
+     * @return the number of deleted messages, only one message should be deleted
      */
     public long deleteMessage(int id) {
         long prevCount = messageRepository.count();
@@ -63,7 +67,7 @@ public class MessageService {
     /**
      * Uses the MessageRepository to update a message by its ID from the database.
      * @param id the message_id.
-     * @return the new updated message if successful, null if not successfully updated
+     * @return the number of updated messages, only one message should be updated
      */
     public int updateMessage(int id, Message message) {
         if(messageRepository.existsById(id) && (message.getMessageText().length() > 0) && (message.getMessageText().length() <= 255)) {

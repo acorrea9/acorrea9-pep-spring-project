@@ -31,14 +31,14 @@ public class SocialMediaController {
     @PostMapping("/register")
     public ResponseEntity<Account> register(@RequestBody Account account) {
         Account registeredAccount = accountService.registerAccount(account);
-        if(registeredAccount == account) {
+        if(registeredAccount == null) {
+            return ResponseEntity.status(400).build();
+        }
+        else if(registeredAccount.getAccountId() == null) {
             return ResponseEntity.status(409).build();
         }
-        else if(registeredAccount != null) {
-            return ResponseEntity.status(200).body(registeredAccount);
-        }
         else {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(200).body(registeredAccount);
         }
     }
 
@@ -48,18 +48,20 @@ public class SocialMediaController {
         if(temp != null) {
             return ResponseEntity.status(200).body(temp);
         }
-        return ResponseEntity.status(401).build();
+        else {
+            return ResponseEntity.status(401).build();
+        }
     }
 
     @PostMapping("/messages")
     public ResponseEntity<Message> createMessage(@RequestBody Message message) {
-        Message addedMessage = messageService.createMessage(message);
-        if(addedMessage != null) {
-            return ResponseEntity.status(200).body(addedMessage);
+        if(accountService.existsById(message.getPostedBy())) {
+            Message addedMessage = messageService.createMessage(message);
+            if(addedMessage != null) {
+                return ResponseEntity.status(200).body(addedMessage);
+            }
         }
-        else {
-            return ResponseEntity.status(400).build();
-        }
+        return ResponseEntity.status(400).build();
     }
 
     @GetMapping("/messages")

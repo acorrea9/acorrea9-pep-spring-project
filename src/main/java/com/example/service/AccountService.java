@@ -23,8 +23,8 @@ public class AccountService {
      */
     public Account registerAccount(Account account) {
         if((account.getUsername().length() != 0) && (account.getPassword().length() >= 4)) {
-            if(!accountRepository.usernameExists(account.getUsername())) {
-                return accountRepository.registerAccount(account);
+            if(!accountRepository.existsByUsername(account.getUsername())) {
+                return accountRepository.save(account);
             }
             else {
                 return account;
@@ -39,6 +39,10 @@ public class AccountService {
      * @return an account with an account_id if the account exists, null if the account does not exists
      */
     public Account loginAccount(Account account) {
-        return accountRepository.loginAccount(account);
+        return accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword()).orElse(null);
+    }
+
+    public boolean existsById(Integer id) {
+        return accountRepository.existsById(id);
     }
 }
